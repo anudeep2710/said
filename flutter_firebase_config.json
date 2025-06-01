@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "1026546995867",
+    "project_id": "said-eb2f5",
+    "storage_bucket": "said-eb2f5.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1026546995867:android:bfbde1b0537723a9246c3e",
+        "android_client_info": {
+          "package_name": "com.example.said_app"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "1026546995867-cflbvuacgl2r4dq1o4cmmkf6dfaidl7e.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyD5Nm1AklgfxFBz3aNmHHohVO-PRPS1nKs"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "1026546995867-cflbvuacgl2r4dq1o4cmmkf6dfaidl7e.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

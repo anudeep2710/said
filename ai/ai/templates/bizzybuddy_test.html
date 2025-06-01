@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BizzyBuddy API Test</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        .response-container {
+            max-height: 400px;
+            overflow-y: auto;
+            background-color: #f8f9fa;
+            padding: 1rem;
+            border-radius: 5px;
+            font-family: monospace;
+            margin-top: 1rem;
+        }
+        .card {
+            margin-bottom: 2rem;
+        }
+        pre {
+            white-space: pre-wrap;
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
+        <div class="container">
+            <a class="navbar-brand" href="#">BizzyBuddy API Test</a>
+        </div>
+    </nav>
+
+    <div class="container mt-4">
+        <div class="row">
+            <div class="col-md-12">
+                <div class="alert alert-info">
+                    <h5>API Testing Tool</h5>
+                    <p>Use this page to test the BizzyBuddy API endpoints before integrating with the Flutter app.</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Inventory API Test -->
+        <div class="card">
+            <div class="card-header">
+                <h5>Inventory API</h5>
+            </div>
+            <div class="card-body">
+                <button id="getInventoryBtn" class="btn btn-primary">Get Inventory</button>
+                <div id="inventoryResponse" class="response-container" style="display: none;">
+                    <pre></pre>
+                </div>
+            </div>
+        </div>
+
+        <!-- Sales API Test -->
+        <div class="card">
+            <div class="card-header">
+                <h5>Sales API</h5>
+            </div>
+            <div class="card-body">
+                <button id="getSalesBtn" class="btn btn-primary">Get Sales</button>
+                <div id="salesResponse" class="response-container" style="display: none;">
+                    <pre></pre>
+                </div>
+            </div>
+        </div>
+
+        <!-- Analytics API Test -->
+        <div class="card">
+            <div class="card-header">
+                <h5>Analytics API</h5>
+            </div>
+            <div class="card-body">
+                <button id="getAnalyticsBtn" class="btn btn-primary">Get Analytics</button>
+                <div id="analyticsResponse" class="response-container" style="display: none;">
+                    <pre></pre>
+                </div>
+            </div>
+        </div>
+
+        <!-- Record Sale API Test -->
+        <div class="card">
+            <div class="card-header">
+                <h5>Record Sale API</h5>
+            </div>
+            <div class="card-body">
+                <div class="row g-3 mb-3">
+                    <div class="col-md-6">
+                        <label for="productId" class="form-label">Product ID</label>
+                        <input type="number" class="form-control" id="productId" value="1">
+                    </div>
+                    <div class="col-md-6">
+                        <label for="quantity" class="form-label">Quantity</label>
+                        <input type="number" class="form-control" id="quantity" value="1">
+                    </div>
+                </div>
+                <button id="recordSaleBtn" class="btn btn-primary">Record Sale</button>
+                <div id="recordSaleResponse" class="response-container" style="display: none;">
+                    <pre></pre>
+                </div>
+            </div>
+        </div>
+
+        <!-- AI Analysis API Test -->
+        <div class="card">
+            <div class="card-header">
+                <h5>AI Analysis API</h5>
+            </div>
+            <div class="card-body">
+                <div class="mb-3">
+                    <label for="question" class="form-label">Question</label>
+                    <input type="text" class="form-control" id="question" value="What are my top selling products?">
+                </div>
+                <button id="analyzeBtn" class="btn btn-primary">Analyze</button>
+                <div id="analyzeResponse" class="response-container" style="display: none;">
+                    <pre></pre>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Utility to format JSON responses
+        function formatJSON(json) {
+            return JSON.stringify(json, null, 2);
+        }
+
+        // Show response in container
+        function showResponse(containerId, data) {
+            const container = document.getElementById(containerId);
+            container.style.display = 'block';
+            container.querySelector('pre').textContent = formatJSON(data);
+        }
+
+        // API base URL
+        const apiBaseUrl = window.location.origin;
+
+        // Get Inventory
+        document.getElementById('getInventoryBtn').addEventListener('click', async () => {
+            try {
+                const response = await fetch(`${apiBaseUrl}/api/bizzybuddy/inventory`);
+                const data = await response.json();
+                showResponse('inventoryResponse', data);
+            } catch (error) {
+                showResponse('inventoryResponse', { error: error.message });
+            }
+        });
+
+        // Get Sales
+        document.getElementById('getSalesBtn').addEventListener('click', async () => {
+            try {
+                const response = await fetch(`${apiBaseUrl}/api/bizzybuddy/sales`);
+                const data = await response.json();
+                showResponse('salesResponse', data);
+            } catch (error) {
+                showResponse('salesResponse', { error: error.message });
+            }
+        });
+
+        // Get Analytics
+        document.getElementById('getAnalyticsBtn').addEventListener('click', async () => {
+            try {
+                const response = await fetch(`${apiBaseUrl}/api/bizzybuddy/analytics`);
+                const data = await response.json();
+                showResponse('analyticsResponse', data);
+            } catch (error) {
+                showResponse('analyticsResponse', { error: error.message });
+            }
+        });
+
+        // Record Sale
+        document.getElementById('recordSaleBtn').addEventListener('click', async () => {
+            try {
+                const productId = document.getElementById('productId').value;
+                const quantity = document.getElementById('quantity').value;
+                
+                const response = await fetch(`${apiBaseUrl}/api/bizzybuddy/record-sale`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        productId: parseInt(productId),
+                        quantity: parseInt(quantity)
+                    })
+                });
+                
+                const data = await response.json();
+                showResponse('recordSaleResponse', data);
+            } catch (error) {
+                showResponse('recordSaleResponse', { error: error.message });
+            }
+        });
+
+        // AI Analysis
+        document.getElementById('analyzeBtn').addEventListener('click', async () => {
+            try {
+                const question = document.getElementById('question').value;
+                
+                const response = await fetch(`${apiBaseUrl}/api/analyze`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ question })
+                });
+                
+                const data = await response.json();
+                showResponse('analyzeResponse', data);
+            } catch (error) {
+                showResponse('analyzeResponse', { error: error.message });
+            }
+        });
+    </script>
+</body>
+</html> 

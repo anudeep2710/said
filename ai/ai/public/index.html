@@ -1,0 +1,260 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CSV Analytics Dashboard</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        .card {
+            transition: transform 0.2s;
+            margin-bottom: 20px;
+        }
+        .card:hover {
+            transform: translateY(-5px);
+        }
+        .insight-card {
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+        }
+        .chart-container {
+            position: relative;
+            height: 300px;
+            margin-bottom: 20px;
+        }
+        .loading {
+            display: none;
+            text-align: center;
+            padding: 20px;
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
+        <div class="container">
+            <a class="navbar-brand" href="#">CSV Analytics Dashboard</a>
+        </div>
+    </nav>
+
+    <div class="container mt-4">
+        <div class="row">
+            <div class="col-md-12">
+                <div class="card">
+                    <div class="card-body">
+                        <h5 class="card-title">Ask Questions About Your Data</h5>
+                        <div class="input-group mb-3">
+                            <input type="text" id="questionInput" class="form-control" placeholder="e.g., Which product is selling the most?">
+                            <button class="btn btn-primary" id="askButton">Ask</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="loading" id="loadingIndicator">
+            <div class="spinner-border text-primary" role="status">
+                <span class="visually-hidden">Loading...</span>
+            </div>
+            <p class="mt-2">Analyzing data...</p>
+        </div>
+
+        <div class="row mt-4" id="insightsContainer">
+            <!-- Insights will be populated here -->
+        </div>
+
+        <div class="row mt-4">
+            <div class="col-md-6">
+                <div class="card">
+                    <div class="card-body">
+                        <h5 class="card-title">Top Selling Products</h5>
+                        <div class="chart-container">
+                            <canvas id="topProductsChart"></canvas>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="card">
+                    <div class="card-body">
+                        <h5 class="card-title">Revenue Trend</h5>
+                        <div class="chart-container">
+                            <canvas id="revenueChart"></canvas>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Initialize charts
+        let topProductsChart, revenueChart;
+
+        // Function to update charts
+        function updateCharts(insights) {
+            // Update Top Products Chart
+            const topProductsCtx = document.getElementById('topProductsChart').getContext('2d');
+            if (topProductsChart) topProductsChart.destroy();
+            topProductsChart = new Chart(topProductsCtx, {
+                type: 'bar',
+                data: {
+                    labels: insights.topSelling.map(item => item.product),
+                    datasets: [{
+                        label: 'Sales',
+                        data: insights.topSelling.map(item => item.sales),
+                        backgroundColor: 'rgba(54, 162, 235, 0.5)',
+                        borderColor: 'rgba(54, 162, 235, 1)',
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false
+                }
+            });
+
+            // Update Revenue Chart
+            const revenueCtx = document.getElementById('revenueChart').getContext('2d');
+            if (revenueChart) revenueChart.destroy();
+            revenueChart = new Chart(revenueCtx, {
+                type: 'line',
+                data: {
+                    labels: insights.revenueTrend.map(item => item.month),
+                    datasets: [{
+                        label: 'Revenue',
+                        data: insights.revenueTrend.map(item => item.revenue),
+                        borderColor: 'rgba(75, 192, 192, 1)',
+                        tension: 0.1
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false
+                }
+            });
+        }
+
+        // Function to display insights
+        function displayInsights(insights) {
+            const container = document.getElementById('insightsContainer');
+            container.innerHTML = '';
+
+            // Create insight cards
+            const categories = insights.categoryPerformance.map(category => `
+                <div class="col-md-4">
+                    <div class="card insight-card">
+                        <div class="card-body">
+                            <h5 class="card-title">${category.category}</h5>
+                            <p class="card-text">
+                                Total Sales: ${category.totalSales}<br>
+                                Total Revenue: ₹${category.totalRevenue.toLocaleString()}<br>
+                                Products: ${category.productCount}
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            `).join('');
+
+            container.innerHTML = categories;
+        }
+
+        // Event listener for ask button
+        document.getElementById('askButton').addEventListener('click', async () => {
+            const question = document.getElementById('questionInput').value;
+            if (!question) return;
+
+            const loadingIndicator = document.getElementById('loadingIndicator');
+            loadingIndicator.style.display = 'block';
+
+            try {
+                const response = await fetch('/api/analyze', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ question })
+                });
+
+                const data = await response.json();
+                
+                // Update charts and insights
+                updateCharts(data.insights);
+                displayInsights(data.insights);
+
+                // Display AI response
+                alert(`AI Analysis: ${data.answer}`);
+            } catch (error) {
+                console.error('Error:', error);
+                alert('Error analyzing data. Please try again.');
+            } finally {
+                loadingIndicator.style.display = 'none';
+            }
+        });
+
+        // Initial data load
+        fetch('/api/sample-data')
+            .then(response => response.json())
+            .then(data => {
+                const insights = {
+                    topSelling: findTopSelling(data),
+                    revenueTrend: calculateRevenueTrend(data),
+                    categoryPerformance: analyzeCategoryPerformance(data)
+                };
+                updateCharts(insights);
+                displayInsights(insights);
+            });
+
+        // Helper functions
+        function findTopSelling(data) {
+            const productSales = {};
+            data.forEach(item => {
+                if (!productSales[item.product]) {
+                    productSales[item.product] = 0;
+                }
+                productSales[item.product] += item.sales;
+            });
+            
+            return Object.entries(productSales)
+                .sort(([,a], [,b]) => b - a)
+                .slice(0, 3)
+                .map(([product, sales]) => ({ product, sales }));
+        }
+
+        function calculateRevenueTrend(data) {
+            const monthlyRevenue = {};
+            data.forEach(item => {
+                if (!monthlyRevenue[item.month]) {
+                    monthlyRevenue[item.month] = 0;
+                }
+                monthlyRevenue[item.month] += item.revenue;
+            });
+            
+            return Object.entries(monthlyRevenue)
+                .map(([month, revenue]) => ({ month, revenue }));
+        }
+
+        function analyzeCategoryPerformance(data) {
+            const categoryStats = {};
+            data.forEach(item => {
+                if (!categoryStats[item.category]) {
+                    categoryStats[item.category] = {
+                        totalSales: 0,
+                        totalRevenue: 0,
+                        products: new Set()
+                    };
+                }
+                categoryStats[item.category].totalSales += item.sales;
+                categoryStats[item.category].totalRevenue += item.revenue;
+                categoryStats[item.category].products.add(item.product);
+            });
+            
+            return Object.entries(categoryStats).map(([category, stats]) => ({
+                category,
+                totalSales: stats.totalSales,
+                totalRevenue: stats.totalRevenue,
+                productCount: stats.products.size
+            }));
+        }
+    </script>
+</body>
+</html> 

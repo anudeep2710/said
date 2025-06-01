@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="200" height="200" viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
+  <!-- Circle background -->
+  <circle cx="100" cy="100" r="90" fill="#FFFFFF" stroke="#E8F5E9" stroke-width="10"/>
+  
+  <!-- Leaf shape -->
+  <path d="M100,40 C60,40 40,70 40,110 C40,150 70,160 100,160 C100,160 100,130 100,110 C100,90 120,70 160,70 C160,70 140,40 100,40 Z" 
+        fill="#4CAF50" stroke="#2E7D32" stroke-width="2"/>
+  
+  <!-- Stem -->
+  <path d="M100,110 L100,160" stroke="#2E7D32" stroke-width="4" stroke-linecap="round"/>
+  
+  <!-- Water droplet -->
+  <path d="M75,90 C75,80 85,70 95,80 C105,70 115,80 115,90 C115,105 95,115 95,115 C95,115 75,105 75,90 Z" 
+        fill="#81D4FA" stroke="#0288D1" stroke-width="1"/>
+  
+  <!-- Sun rays -->
+  <circle cx="140" cy="60" r="15" fill="#FFD54F" stroke="#FFA000" stroke-width="1"/>
+  <line x1="140" y1="35" x2="140" y2="25" stroke="#FFD54F" stroke-width="3" stroke-linecap="round"/>
+  <line x1="140" y1="85" x2="140" y2="95" stroke="#FFD54F" stroke-width="3" stroke-linecap="round"/>
+  <line x1="115" y1="60" x2="105" y2="60" stroke="#FFD54F" stroke-width="3" stroke-linecap="round"/>
+  <line x1="165" y1="60" x2="175" y2="60" stroke="#FFD54F" stroke-width="3" stroke-linecap="round"/>
+  <line x1="125" y1="45" x2="115" y2="35" stroke="#FFD54F" stroke-width="3" stroke-linecap="round"/>
+  <line x1="155" y1="75" x2="165" y2="85" stroke="#FFD54F" stroke-width="3" stroke-linecap="round"/>
+  <line x1="125" y1="75" x2="115" y2="85" stroke="#FFD54F" stroke-width="3" stroke-linecap="round"/>
+  <line x1="155" y1="45" x2="165" y2="35" stroke="#FFD54F" stroke-width="3" stroke-linecap="round"/>
+</svg>
