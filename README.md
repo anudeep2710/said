@@ -108,32 +108,13 @@ uvicorn main:app --reload --host 0.0.0.0 --port 8000
 
 ## 🔧 **Configuration**
 
-### **Environment Variables**
-
-```bash
-# Google Cloud Configuration
-GOOGLE_CLOUD_PROJECT=said-eb2f5
-GOOGLE_CLOUD_LOCATION=us-central1
-GCS_BUCKET_NAME=said-eb2f5-documents
-
-# AI Configuration
-GOOGLE_AI_API_KEY=your_gemini_api_key
-USE_REAL_AI=true
 
 # Storage Configuration
-USE_MOCK_STORAGE=false
 
-# Firebase Configuration
-FIREBASE_PROJECT_ID=said-eb2f5
-FIREBASE_PROJECT_NUMBER=1026546995867
 ```
 
 ### **Firebase Setup**
 
-1. **Create Firebase Project**: Use project ID `said-eb2f5`
-2. **Enable Authentication**: Set up email/password authentication
-3. **Get Configuration**: Download `google-services.json` for Android
-4. **Set API Keys**: Configure Firebase API key in your client app
 
 ## 📊 **Usage Examples**
 
@@ -226,22 +207,7 @@ final response = await http.post(
 );
 ```
 
-## 🚀 **Deployment**
 
-### **Google Cloud Run Deployment**
-
-```bash
-# Build and deploy
-gcloud builds submit --tag gcr.io/said-eb2f5/talktoyourdocument
-gcloud run deploy talktoyourdocument \
-  --image gcr.io/said-eb2f5/talktoyourdocument \
-  --platform managed \
-  --region us-central1 \
-  --allow-unauthenticated \
-  --memory 2Gi \
-  --cpu 2 \
-  --set-env-vars "GOOGLE_AI_API_KEY=your_key,USE_REAL_AI=true"
-```
 
 ## 🛠️ **Development**
 
