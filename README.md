@@ -128,12 +128,6 @@ FIREBASE_PROJECT_ID=said-eb2f5
 FIREBASE_PROJECT_NUMBER=1026546995867
 ```
 
-### **Firebase Setup**
-
-1. **Create Firebase Project**: Use project ID `said-eb2f5`
-2. **Enable Authentication**: Set up email/password authentication
-3. **Get Configuration**: Download `google-services.json` for Android
-4. **Set API Keys**: Configure Firebase API key in your client app
 
 ## 📊 **Usage Examples**
 
